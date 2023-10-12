@@ -1,7 +1,7 @@
 import math
 
 from pico2d import load_image, get_time
-from sdl2 import SDL_KEYDOWN, SDLK_SPACE
+from sdl2 import SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_RIGHT, SDLK_LEFT
 
 
 def space_down(e):
@@ -12,6 +12,19 @@ def time_out(e):
 
 def time_out_5(e):
     return e[0] == 'TIME_OUT' and e[1] == 5.0
+
+
+def right_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
+
+def right_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_RIGHT
+
+def left_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_LEFT
+
+def left_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_LEFT
 
 
 class Sleep:
@@ -58,6 +71,29 @@ class Idle:
     def draw(boy):
         boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y)
         pass
+
+
+class Run:
+    @staticmethod
+    def enter(boy, e):
+        if right_down(e) or left_up(e): # 오른쪽으로 RUN
+            boy.dir, boy.action = 1, 1
+        elif left_down(e) or right_up(e): # 왼쪽으로 RUN
+            boy.dir, boy.action = -1, 0
+
+    @staticmethod
+    def exit(boy, e):
+        pass
+
+    @staticmethod
+    def do(boy):
+        boy.frame = (boy.frame + 1) % 8
+        boy.x += boy.dir * 5
+        pass
+
+    @staticmethod
+    def draw(boy):
+        boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y)
 
 
 class AutoRun:
@@ -145,3 +181,5 @@ class Boy:
 
     def draw(self):
         self.state_machine.draw()
+
+
