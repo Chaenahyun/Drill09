@@ -66,6 +66,7 @@ class AutoRun:
         boy.frame = 0
         boy.dir = 1
         boy.action = 1
+        boy.scale = 2  # 크기를 2배로 설정
         print('AutoRun Entry Action')
 
     @staticmethod
@@ -88,12 +89,10 @@ class AutoRun:
 
     @staticmethod
     def draw(boy):
-        boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y)
+        # 크기
+        boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y, 100 * boy.scale, 100 * boy.scale)
 
-    @staticmethod
-    def handle_event(boy, e):
-        if space_down(e):
-            boy.state_machine.handle_event(('SPACE', 0))
+
 
 
 class StateMachine:
@@ -116,6 +115,7 @@ class StateMachine:
                 self.cur_state = next_state
                 self.cur_state.enter(self.boy)
                 return True
+
         return False
 
     def update(self):
@@ -123,6 +123,7 @@ class StateMachine:
 
     def draw(self):
         self.cur_state.draw(self.boy)
+
 
 
 class Boy:
